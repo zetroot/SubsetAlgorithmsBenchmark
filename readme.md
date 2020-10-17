@@ -39,7 +39,7 @@ AMD Ryzen 5 2400G with Radeon Vega Graphics, 1 CPU, 8 logical and 4 physical cor
 
 
 ```
-|          Method | SupersetsInIteration | SubsetLength | Variability |          Mean |       Error |        StdDev |
+|          Method | Supersets Count | Subset Length | Variability |          Mean |       Error |        StdDev |
 |---------------- |--------------------- |------------- |------------ |--------------:|------------:|--------------:|
 |  **Except().Any()** |                  **100** |            **1** |         **100** |     **21.260 μs** |   **0.1413 μs** |     **0.1252 μs** |
 |         HashSet |                  100 |            1 |         100 |     18.406 μs |   0.0970 μs |     0.0860 μs |
