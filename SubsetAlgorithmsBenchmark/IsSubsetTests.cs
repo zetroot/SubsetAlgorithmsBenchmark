@@ -8,10 +8,10 @@ namespace SubsetAlgorithmsBenchmark
 {
     public class IsSubsetTests
     {
-        [Params(100, 1000, 10000)]
+        [Params(1000, 10000, 100000)]
         public int SupersetsInIteration { get; set; }
 
-        [Params(1, 10, 50)]
+        [Params(10, 50)]
         public int SubsetLength { get; set; }
 
         [Params(100, 10000)]
@@ -19,6 +19,7 @@ namespace SubsetAlgorithmsBenchmark
 
         private int[] subset;
         private int[][] supersets;
+        private HashSet<int>[] hash_supersets;
 
         [GlobalSetup]
         public void Setup()
@@ -35,6 +36,7 @@ namespace SubsetAlgorithmsBenchmark
                         .Select(_ => rand.Next(Variability))
                         .ToArray())
                 .ToArray();
+            hash_supersets = supersets.Select(x => x.ToHashSet()).ToArray();
         }
 
         [GlobalCleanup]
@@ -44,7 +46,11 @@ namespace SubsetAlgorithmsBenchmark
             for (int i = 0; i < supersets.Length; ++i)
                 supersets[i] = null;
 
+            for (int i = 0; i < hash_supersets.Length; ++i)
+                hash_supersets[i] = null;
+
             supersets = null;
+            hash_supersets = null;
             GC.Collect(2, GCCollectionMode.Forced, true, true);
         }
 
@@ -60,7 +66,7 @@ namespace SubsetAlgorithmsBenchmark
             return result;
         }
 
-        [Benchmark(Description = "HashSet")]
+        [Benchmark(Description = "ToHashSet()")]
         public bool[] Hashsets()
         {
             var result = new bool[SupersetsInIteration];
@@ -68,6 +74,19 @@ namespace SubsetAlgorithmsBenchmark
             for (int i = 0; i < SupersetsInIteration; ++i)
             {
                 var superset = supersets[i].ToHashSet();                
+                result[i] = subset_hashset.IsSubsetOf(superset);
+            }
+            return result;
+        }
+
+        [Benchmark(Description = "prebuilt HashSet")]
+        public bool[] PrebuiltHashsets()
+        {
+            var result = new bool[SupersetsInIteration];
+            var subset_hashset = subset.ToHashSet();
+            for (int i = 0; i < SupersetsInIteration; ++i)
+            {
+                var superset = hash_supersets[i];
                 result[i] = subset_hashset.IsSubsetOf(superset);
             }
             return result;
